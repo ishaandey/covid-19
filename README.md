@@ -1,6 +1,6 @@
-# COVID-19
-Some data cleaning and visualization Python notebooks to get started with COVID-19 data.
- 
+# Getting started with COVID-19
+The purpose of this project is simply to provide some basic tools for data cleaning, visualization, and modelling COVID-19 data in Python.
+
 ## Data Sources
 This project uses live data from the [Johns Hopkins CSSE Data Repository](https://github.com/CSSEGISandData/COVID-19) of global COVID-19 cases, and the [New York Times](https://github.com/nytimes/covid-19-data) data collection for US State and county-level data.
 
