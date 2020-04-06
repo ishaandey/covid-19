@@ -10,11 +10,27 @@ import pandas as pd
 import numpy as np
 from datetime import timedelta
 import math
+ 
+
+def clean_data_trackingproject(df, state='all'):
+    dropCols = ['hash', 'dateChecked', 'fips']
+    df = df.groupby(by=['state','date']).agg('last').reset_index().drop(dropCols,axis=1).sort_values(by=['state','date'])
+    
+    df.columns = [cap(i) for i in df.columns.values]
+    
+    df['Date'] = pd.to_datetime(df.Date, format='%Y%m%d').dt.date
+    if state!='all':
+        try:
+                return df[df.State==state]
+        except:
+            print('Unable to subset for state {}'.format(state))
+    else:
+        return df 
+
 
 def clean_data_hopkins(df, country='all'):
     if country!='all':
-        dropCols = ['Province/State', 'Country/Region', 'Lat', 'Long']
-
+        dropCols = ['Province/State', 'Country/Region','Lat','Long']
         country = df[df['Country/Region'] == country].drop(dropCols,axis=1).T.reset_index()
         country.columns = ['Date','Confirmed']
         country['Country'] = 'US'
@@ -23,13 +39,15 @@ def clean_data_hopkins(df, country='all'):
         return cleaned_country
 
     else:
-        temp = df.drop(['Lat','Long'],axis=1).groupby(by='Country/Region').sum().reset_index()
+        dropCols = ['Lat','Long']   
+        temp = df.drop(dropCols,axis=1).groupby(by='Country/Region').sum().reset_index()
         countries = pd.melt(temp, id_vars=['Country/Region'], var_name='date', value_name='cases')
         countries.columns = ['Country','Date','Confirmed']
         
         cleaned_countries = countries.groupby('Country').apply(clean_cols)
         return cleaned_countries
 
+            
 def clean_data_nyt(df, level='state'):
     if level == 'state':
         states = df.groupby(by=['state','date']).agg('last')[['cases']].reset_index()
@@ -44,6 +62,7 @@ def clean_data_nyt(df, level='state'):
         
         cleaned_local = local.groupby('State').apply(clean_cols)
         return cleaned_local            
+            
             
 def clean_cols(df, rates=False, smooth_days=3):
     try:
@@ -69,6 +88,9 @@ def clean_cols(df, rates=False, smooth_days=3):
         # Haha irdk math
         df['GrowthRate_Smooth'] = df.GrowthRate.rolling(smooth_days).sum()/smooth_days
         df['Ratio_Smooth'] = df.Ratio.rolling(smooth_days).sum()/smooth_days
-   
-
+        
     return df
+
+
+def cap(s):
+    return s[:1].upper() + s[1:]

@@ -20,7 +20,6 @@ from scipy import interpolate
 containment = pd.read_csv('containment.txt')
 containment.columns = ['State','Date']
 
-print('memes')
 def annotate_containment(fig, lookup=containment, items=[], library='plotly'):
     global containment
     if library == 'plotly':
