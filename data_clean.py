@@ -28,7 +28,7 @@ def clean_data_trackingproject(df, state='all'):
         return df 
 
 
-def clean_data_hopkins(df, country='all'):
+def clean_data_hopkins(df, country='all's):
     if country!='all':
         dropCols = ['Province/State', 'Country/Region','Lat','Long']
         country = df[df['Country/Region'] == country].drop(dropCols,axis=1).T.reset_index()
