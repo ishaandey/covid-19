@@ -21,14 +21,14 @@ def clean_data_trackingproject(df, state='all'):
     df['Date'] = pd.to_datetime(df.Date, format='%Y%m%d').dt.date
     if state!='all':
         try:
-                return df[df.State==state]
+            return df[df.State==state]
         except:
             print('Unable to subset for state {}'.format(state))
     else:
         return df 
 
 
-def clean_data_hopkins(df, country='all's):
+def clean_data_hopkins(df, country='all'):
     if country!='all':
         dropCols = ['Province/State', 'Country/Region','Lat','Long']
         country = df[df['Country/Region'] == country].drop(dropCols,axis=1).T.reset_index()
@@ -44,6 +44,9 @@ def clean_data_hopkins(df, country='all's):
         countries = pd.melt(temp, id_vars=['Country/Region'], var_name='date', value_name='cases')
         countries.columns = ['Country','Date','Confirmed']
         
+#         countries['Date'] = pd.to_datetime(countries.Date).dt.date
+#         print(countries.head())
+
         cleaned_countries = countries.groupby('Country').apply(clean_cols)
         return cleaned_countries
 
@@ -65,13 +68,16 @@ def clean_data_nyt(df, level='state'):
             
             
 def clean_cols(df, rates=False, smooth_days=3):
+#     try:
+    df['Date'] = pd.to_datetime(df.Date).dt.date
     try:
-        df['Date'] = pd.to_datetime(df.Date).dt.date
-        df['EpidemicStartDate'] = df.sort_values(by='Date').loc[df.Confirmed!=0].Date.iloc[0]
-        df['DaysElapsed'] = (df.Date - df.EpidemicStartDate).dt.days + 1
+        df['EpidemicStartDate'] = df.sort_values(by='Date').loc[df.Confirmed>1].Date.iloc[0]
+    except IndexError:
+        df['EpidemicStartDate'] = df.sort_values(by='Date').Date.iloc[0]
+    df['DaysElapsed'] = (df.Date - df.EpidemicStartDate).dt.days + 1
 
-    except:
-        print('Unable to convert dates properly!')
+#     except:
+#         print('Unable to convert dates properly!')
     
     df['NewConfirmed'] = df.Confirmed.diff(periods=1)
     
