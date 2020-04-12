@@ -67,6 +67,3 @@ def predict_growth(x, y, r, params, days=3):
         d += 1
         
     return x_range, y_pred, r_pred
-
-def predict_lmfit(x, y, model, days=3):
-    x_range = []
