@@ -19,6 +19,8 @@ def clean_data_trackingproject(df, state='all'):
     df.columns = [cap(i) for i in df.columns.values]
     
     df['Date'] = pd.to_datetime(df.Date, format='%Y%m%d').dt.date
+    df['PositiveTestRate'] 
+    
     if state!='all':
         try:
             return df[df.State==state]
@@ -43,9 +45,6 @@ def clean_data_hopkins(df, country='all'):
         temp = df.drop(dropCols,axis=1).groupby(by='Country/Region').sum().reset_index()
         countries = pd.melt(temp, id_vars=['Country/Region'], var_name='date', value_name='cases')
         countries.columns = ['Country','Date','Confirmed']
-        
-#         countries['Date'] = pd.to_datetime(countries.Date).dt.date
-#         print(countries.head())
 
         cleaned_countries = countries.groupby('Country').apply(clean_cols)
         return cleaned_countries
@@ -68,32 +67,23 @@ def clean_data_nyt(df, level='state'):
             
             
 def clean_cols(df, rates=False, smooth_days=3):
-#     try:
     df['Date'] = pd.to_datetime(df.Date).dt.date
     try:
         df['EpidemicStartDate'] = df.sort_values(by='Date').loc[df.Confirmed>1].Date.iloc[0]
     except IndexError:
         df['EpidemicStartDate'] = df.sort_values(by='Date').Date.iloc[0]
+        
     df['DaysElapsed'] = (df.Date - df.EpidemicStartDate).dt.days + 1
-
-#     except:
-#         print('Unable to convert dates properly!')
-    
     df['NewConfirmed'] = df.Confirmed.diff(periods=1)
     
-    # Takes the natural log not log10 s
+    # Takes the natural log not log10 
     df['DaysElapsed_Log'] = np.log(df.DaysElapsed)
     df['Confirmed_Log'] = np.log(df.Confirmed)
     df['NewConfirmed_Log'] = np.log(df.NewConfirmed)
     
     if rates:
-        # Haha idk math
         df['GrowthRate'] = df.NewConfirmed/df.NewConfirmed.shift(1)
         df['Ratio'] = df.Confirmed/df.Confirmed.shift(1)
-
-        # Haha irdk math
-        df['GrowthRate_Smooth'] = df.GrowthRate.rolling(smooth_days).sum()/smooth_days
-        df['Ratio_Smooth'] = df.Ratio.rolling(smooth_days).sum()/smooth_days
         
     return df
 
