@@ -19,7 +19,7 @@ def clean_data_trackingproject(df, state='all'):
     df.columns = [cap(i) for i in df.columns.values]
     
     df['Date'] = pd.to_datetime(df.Date, format='%Y%m%d').dt.date
-    df['PositiveTestRate'] 
+#     df['PositiveTestRate'] 
     
     if state!='all':
         try:
