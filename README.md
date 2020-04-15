@@ -12,6 +12,8 @@ This project uses live data from the [Johns Hopkins CSSE Data Repository](https:
 
 [SIR_time_dependent_US.ipynb](SIR_time_dependent_US.ipynb) is an adaptation from [this paper](https://arxiv.org/abs/2003.00122), which models Chinese infections using a time-dependent deterministic SIR model. This models expands upon a basic SIR model using Johns Hopkins data for the US, and parameterizes $\beta$ and $\gamma$ as a function of time. The simulation from the paper is replicated here: [SIR_time_dependent_China.ipynb](SIR_time_dependent_China.ipynb).
 
+![Infections vs. Recovered US Population (4.14.20)](images/SIR-US-2020-14-4.png)
+
 ## Visualizations
 [confirmed_cases.ipynb](confirmed_cases.ipynb) contains visualizations that track current progress of testing and confirmed case counts at the international and US state level. Comment out `renderer='svg'` in `fig.show()` to return an interactive plotly chart instead of the static image.s
 
